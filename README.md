@@ -12,6 +12,14 @@ How fast do local language models run on Apple's Mac mini M6 with 32 GB? Decode 
 
 These runs heated the voltage regulators of the Mac mini to 95 °C at minimum fan speed. The fan controller that came out of it lives in its own repository: [Mac-mini-M6-fan-control-LLM](https://github.com/HDZucht/Mac-mini-M6-fan-control-LLM).
 
+## Why these benchmarks
+
+> I hope these results help others pick a suitable local model. The test set is shaped by my professional interest: I am a scientist in medical biomarker research, so the prompts are mostly scientific (an immunoassay explanation, antigen and disease extraction to JSON, explanations in German and English). I was looking for a model that is useful for scientific paper work, not only for coding requests.
+>
+> Please keep in mind how answers were judged. The tables on this page measure **speed**. Where correctness was assessed (the JSON check, the AREX-2 runs), Claude Code compared the answers automatically against fixed reference answers and accepted or rejected them; I did not grade every answer by hand. **Code quality was not a focus** of these tests: the code prompt measures speed only.
+>
+> — Hans-Dieter Zucht
+
 ## Hardware
 
 | Part | Model | Link (as reported by macOS) | Role in these runs |
