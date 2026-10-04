@@ -12,9 +12,23 @@ How fast do local language models run on Apple's Mac mini M6 with 32 GB? Decode 
 
 These runs heated the voltage regulators of the Mac mini to 95 °C at minimum fan speed. The fan controller that came out of it lives in its own repository: [Mac-mini-M6-fan-control-LLM](https://github.com/HDZucht/Mac-mini-M6-fan-control-LLM).
 
+## Hardware
+
+| Part | Model | Link (as reported by macOS) | Role in these runs |
+|---|---|---|---|
+| Computer | Apple **Mac mini M6** (Mac18,5) | | |
+| Chip | Apple M6: 12 CPU cores (2 Super, 4 Performance, 6 Efficiency), 12 GPU cores, Metal 4 | | inference |
+| Memory | **32 GB** unified memory | | holds the loaded model and its context |
+| Internal SSD | Apple 512 GB | | system |
+| External SSD | **ORICO 2 TB** NVMe in an ASMedia ASM246x enclosure | 40 Gb/s, PCIe 4.0 x4 | **model storage** (all models load from here) |
+| External SSD | **Samsung SSD 9100 PRO 1 TB** NVMe | PCIe 4.0 x4 | additional storage, not used by the models |
+| Dock | **UGREEN Thunderbolt docking station, 10-in-1** (macOS name: *TBT5 Docking Station 10-in-1*) | 40 Gb/s upstream | port expansion |
+
+Load times depend on the SSD link; decode speed, the subject of this page, depends on the chip and its memory bandwidth once a model is loaded.
+
 ## Setup
 
-- **Machine:** Mac mini M6 (Mac18,5), 32 GB unified memory, macOS 27.0.1, models on an external Thunderbolt SSD.
+- **Machine:** see *Hardware* below; macOS 27.0.1.
 - **Server:** LM Studio (OpenAI-compatible API), runtimes llama.cpp (GGUF), MLX and the Splash engine (speculative decoding with DFlash2 drafts).
 - **Method:** [`bench_speed.py`](bench_speed.py), raw results in [`data/`](data/) (one JSON line per run, including the generated text). Each model loaded alone with a 32,768-token context (MLX builds ignored the context setting and loaded 34k to 165k), reasoning off, `max_tokens` 600, `temperature` 0.7, 3 runs per prompt, value = median decode speed in tokens per second.
 - **Prompts:** two German explanations (Rhine geology, bead-based immunoassay), one English (Ruhr area economy), one Python function, one JSON extraction. The JSON answer was correct in 3 of 3 runs for every model except where noted.
