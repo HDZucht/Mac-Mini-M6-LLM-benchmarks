@@ -22,7 +22,7 @@ These runs heated the voltage regulators of the Mac mini to 95 °C at minimum fa
 | Internal SSD | Apple 512 GB | | system |
 | External SSD | **ORICO 2 TB** NVMe in an ASMedia ASM246x enclosure | 40 Gb/s, PCIe 4.0 x4 | **model storage** (all models load from here) |
 | External SSD | **Samsung SSD 9100 PRO 1 TB** NVMe | PCIe 4.0 x4 | additional storage, not involved in these runs |
-| Dock | **UGREEN Thunderbolt docking station, 10-in-1** (macOS name: *TBT5 Docking Station 10-in-1*) | 40 Gb/s upstream | port expansion |
+| Dock | **UGREEN Thunderbolt 5 docking station, 10-in-1** (macOS name: *TBT5 Docking Station 10-in-1*) | 40 Gb/s: the Mac mini's port runs it at Thunderbolt 4 speed | port expansion |
 
 Load times depend on the SSD link; decode speed, the subject of this page, depends on the chip and its memory bandwidth once a model is loaded.
 
