@@ -74,6 +74,14 @@ The model behind the 94.9 °C reading that led to the fan controller. Agent-styl
 
 Splash recognises fine-tunes by architecture, so the Qwen3.8-27B draft speeds up AREX-2 three- to fivefold although it was trained for the base model.
 
+## Recommendation
+
+**Use Splash where it exists.** On this Mac mini M6 the Splash engine (speculative decoding with DFlash2 drafts) gave the highest speed for code and JSON on every model we could compare, and lifted the dense Qwen3.8-27B from 11–19 to 15–68 tok/s. For German prose on the Qwen3.6-35B-A3B mixture-of-experts model the MLX build was faster (63 vs. 52–59 tok/s).
+
+**Splash also speeds up fine-tunes of the same base.** It recognises a model by its architecture, so the Qwen3.8-27B draft accelerated BAAI's AREX-2 (a Qwen3.8 fine-tune) from 7–8 to 22–37 tok/s, and the Qwen3.6 draft makes **Ornith 1.5** 1.4× faster on prose and 2–2.7× on code and JSON than its GGUF. Highly recommended for Ornith; whether the Splash build answers in the same depth as the GGUF has not been measured here.
+
+**How to get there:** Qwen3.8-27B and Qwen3.6-35B-A3B have ready-made Splash packages that LM Studio loads directly. A fine-tune such as AREX-2 runs at full speed today with the standalone server (`splash serve --model <owner/repo-GGUF>:<quant>`). Inside LM Studio it needs its own Splash package (MLX 4-bit target plus the matching draft). Claude Code can build either setup; see [`CLAUDE.md`](CLAUDE.md).
+
 ## Limits
 
 One machine, one session per model, three runs per cell; prose quality was not scored in this table. Speeds depend on LM Studio and runtime versions of October 2026. `data/speed_2026-10-03.jsonl` holds 240 runs (16 models × 5 prompts × 3) and one error line for a model removed before it was measured. The AREX-2 figures come from separate agent runs and are not in that file.
