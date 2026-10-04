@@ -1,0 +1,17 @@
+{"model":"swift-qwen3.8-27b-splash","loaded_ctx":"[32768]"}
+{"model":"qwen3.8-27b-splash","loaded_ctx":"[32768]"}
+{"model":"qwen/qwen3.8-27b","loaded_ctx":"[32768]"}
+{"model":"ornith-1.5-35b-a3b-splash","loaded_ctx":"[32768]"}
+{"model":"ornith-1.5-35b-a3b","loaded_ctx":"[32768]"}
+{"model":"qwen3.6-35b-a3b-splash","loaded_ctx":"[32768]"}
+{"model":"qwen/qwen3.6-35b-a3b","loaded_ctx":"[34560]"}
+{"model":"unsloth/nvidia-nemotron-3.5-lightning-30b-a3b","loaded_ctx":"[32768]"}
+{"model":"lmstudio-community/nvidia-nemotron-3.5-lightning-30b-a3b","loaded_ctx":"[32768]"}
+{"model":"nvidia/nemotron-3-nano-omni","loaded_ctx":"[32768]"}
+{"model":"meta/muse-glimmer","loaded_ctx":"[32768]"}
+{"model":"openai/gpt-oss-20b","loaded_ctx":"[32768]"}
+{"model":"google/gemma-4-26b-a4b-qat","loaded_ctx":"[80128]"}
+{"model":"google/gemma-4-12b-qat","loaded_ctx":"[32768]"}
+{"model":"google/gemma-4-31b-qat","loaded_ctx":"[32768]"}
+{"model":"qwen3.5-9b-mlx","loaded_ctx":"[165120]"}
+{"model":"qwen2.5-coder-14b-instruct-mlx","loaded_ctx":"[]"}
