@@ -30,6 +30,13 @@ LM Studio's Splash backend loads only packed Splash packages (`manifest.json`, `
 
 Licences: check that both the fine-tune and the draft allow redistribution before anyone uploads a package.
 
+## Re-running the Splash vs Kapitsa comparison (`splash-vs-kapitsa-2026-10-22/`)
+
+1. Ask before installing: `brew install nace-ai/tap/kapitsa`. Set `KAPITSA_NO_AUTO_UPDATE=1` so the engine stays at the measured version.
+2. One model at a time: `kapitsa serve --model 35b --port 8010 --context 32768` (or `27b`); LM Studio unloaded. Read the model id from `GET /v1/models`.
+3. `BENCH_BASE=http://127.0.0.1:8010/v1 python3 bench_tempo.py <id> <label> 3`, then `bench_tools.py http://127.0.0.1:8010/v1 <id> <label>`; for thinking tests `bench_genau.py` (needs the MMLU-Pro test parquet and duckdb) and `bench_denken.py`, `EFFORT=low` for a lower thinking level.
+4. On a 32 GB Mac, large models may need `--slots 1` (Nemotron 3.5 Bolt did).
+
 ## Writing results
 
 State what was measured, on which machine, with which runtime versions. Mark interpretations as such. Do not compare against numbers from other machines without saying so.

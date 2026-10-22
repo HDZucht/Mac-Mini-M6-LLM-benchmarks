@@ -1,6 +1,6 @@
 ---
 name: Mac-Mini-M6-LLM-benchmarks
-version: 1.0.0
+version: 1.0.1
 license: MIT
 author: Argus (Claude Opus 5.5) for Hans-Dieter Zucht
 measured_on: Mac mini M6 (Mac18,5), 32 GB, macOS 27.0.1, October 2026
@@ -8,7 +8,64 @@ measured_on: Mac mini M6 (Mac18,5), 32 GB, macOS 27.0.1, October 2026
 
 # Local LLM speed on a Mac mini M6 (32 GB)
 
-How fast do local language models run on Apple's Mac mini M6 with 32 GB? Decode speed of 16 models in LM Studio, measured by Argus (Claude Opus 5.5) for Hans-Dieter Zucht on 3–4 October 2026, with the raw data and the script.
+How fast do local language models run on Apple's Mac mini M6 with 32 GB? Decode speed of 16 models in LM Studio, measured by Argus (Claude Opus 5.5) for Hans-Dieter Zucht on 3–4 October 2026, with the raw data and the script. **Update 22 October 2026:** a head-to-head of the two Qwen workhorse models on Splash and Kapitsa, in real-world tasks (next section).
+
+## Update 22 October 2026: head-to-head of the Qwen workhorse models, Splash vs Kapitsa
+
+Head-to-head benchmarking of the two Qwen models we use most, **Qwen3.6-35B-A3B** (mixture of experts, 3B active) and **Qwen3.8-27B** (dense), on the two fastest Apple-silicon frameworks we know of: **[Splash](https://github.com/incoai/splash)** (incoai, DFlash2 speculative decoding) and **[Kapitsa](https://github.com/nace-ai/kapitsa)** (Nace AI, KFlash tree speculative decoding over the same DFlash2 drafters). Same Mac mini M6, same prompts, same scripts.
+
+**Why.** Kapitsa reports the fastest decode in 21 of 24 model and Mac pairs, measured on M1 Pro, M4 Pro, M5 Pro and M5 Max. The Mac mini M6 is the base chip with 12 GPU cores, and our use is scientific work rather than coding agents. Raw speed is one part of it; what counts is the time and the quality of the work a model does: extracting facts from a paper, finding and citing literature with a search tool, answering exam questions.
+
+**Method.**
+
+| Test | What it measures | Settings | Script |
+|---|---|---|---|
+| Speed | decode tok/s and time to first token on the five prompts of the October table | reasoning off, `max_tokens` 600, temperature 0.7, 3 runs per prompt, median | [`bench_tempo.py`](splash-vs-kapitsa-2026-10-22/bench_tempo.py) |
+| Extraction | entities extracted from three in-house biomedical documents (two conference abstracts, one paper on autoantibody panels) into a strict JSON schema; share of list entries that appear verbatim in the source | temperature 0, `json_schema` strict, reasoning off | aggregates in [`data/`](splash-vs-kapitsa-2026-10-22/data/extraction_summary_2026-10-22.json); the documents stay private |
+| PubMed agent | five questions with a real PubMed search tool: two citations, one PMID, one invented paper (correct answer: cannot be found), the three newest anti-Ro52 papers in interstitial lung disease; returned PMIDs checked against PubMed | thinking on, temperature 0.6, up to 8 tool rounds | [`bench_tools.py`](splash-vs-kapitsa-2026-10-22/bench_tools.py) |
+
+- **Splash:** the ready-made packages `incoai/Qwen3.6-35B-A3B-Splash` and `incoai/Qwen3.8-27B-Splash` in LM Studio's Splash backend. Speed from the 3 October runs (table below), extraction of the 35B on 15 October, of the 27B on 22 October, PubMed agent of the 27B on 4 October.
+- **Kapitsa:** version 0.2.4 (Homebrew `nace-ai/tap/kapitsa`), the catalog builds `35b` and `27b` (MLX affine 4-bit, group 64, each with its MTP head and DFlash2 drafter), 32,768-token context, one model per server. Measured on 22 October 2026, 01:50–04:37, LM Studio idle.
+
+**Results** (bold = better of the pair):
+
+| | 35B, Splash | 35B, Kapitsa | 27B, Splash | 27B, Kapitsa |
+|---|---|---|---|---|
+| **Decode tok/s** prose DE (Rhine) | 51.5 | **69.3** | **15.3** | 13.5 |
+| prose DE (assay) | 59.0 | **75.3** | **17.2** | 14.7 |
+| prose EN | 69.6 | **84.1** | **20.2** | 18.2 |
+| code | 135.9 | **160.1** | **45.2** | 38.2 |
+| JSON | **234.1** | 219.8 | **67.7** | 51.2 |
+| Time to first token, median | **0.12 s** | 0.13 s | **0.29 s** | 0.66 s |
+| **Extraction** seconds per document | **5.8** | 6.1 | 19.8 | **17.7** |
+| entities per document | **40.3** | 33.3 | 32.7 | **58.7** |
+| verbatim in source | 88.8 % | **90.2 %** | 87.5 % | **90.9 %** |
+| **PubMed agent** time for 5 questions | ¹ | 141 s | **261 s** | 305 s |
+| solved of 5 | ¹ | 3.5 | 4 | 4 |
+
+¹ The Splash run of the 35B on 15 October used an LM Studio preset with structured output and thinking off, so the model hardly called the tool. It is left out.
+
+**Conclusion.**
+
+- **Qwen3.6-35B-A3B: Kapitsa writes faster.** Prose and code run 18–35 % faster than with Splash; JSON is 6 % slower. Extraction takes the same time per document (6 s), and the Splash package extracts more entities (40 vs 33).
+- **Qwen3.8-27B: Splash writes faster, Kapitsa works better.** Splash decodes 11–32 % faster. Kapitsa's MLX 4-bit build extracts 58.7 entities per document against 32.7 from the Splash package, at the same share of verbatim entries, and finishes each document 2 s sooner. Both builds are MLX affine 4-bit with group size 64, but engine and package differ at once, so this test leaves open whether the broader extraction comes from Kapitsa or from the package.
+- **Time per task depends on the model's search behaviour as much as on tok/s.** In the PubMed test the faster engine needed more time when the model searched longer (35B on Kapitsa: 8 rounds for one citation).
+- **For this Mac:** Kapitsa with the 35B for fast answers, Kapitsa with the 27B for extraction. Splash stays the choice for the highest decode speed on the 27B.
+
+**Also measured** (details in [`splash-vs-kapitsa-2026-10-22/`](splash-vs-kapitsa-2026-10-22/)):
+
+- **Swift 1.5** (UkisAI's Qwen3.8-27B fine-tune for shorter thinking, `ukisai/Swift-1.5-Qwen3.8-27B-GGUF` Q4_K_M, imported into Kapitsa with the base drafter) against the base model with thinking on, on 40 MMLU-Pro questions (biology, chemistry, health, math, 10 each, seed 1729) and five tasks with checkable answers ([`bench_genau.py`](splash-vs-kapitsa-2026-10-22/bench_genau.py), [`bench_denken.py`](splash-vs-kapitsa-2026-10-22/bench_denken.py)):
+
+  | Qwen3.8-27B variant on Kapitsa | MMLU-Pro correct | tokens per answer, mean | cut off at 8,000 tokens |
+  |---|---|---|---|
+  | base, default thinking level | 31/40 | 2,448 | 6 |
+  | base, `reasoning_effort: low` | **34/40** | **1,204** | 1 |
+  | Swift 1.5 | 30/40 | 1,242 | 5 |
+
+  Swift thinks 49 % shorter than the base at its default level, as UkisAI states. The base model with `reasoning_effort: low` thinks as short and answered 34 instead of 30 questions correctly (exact McNemar p = 0.22, so within the noise of 40 questions). All three solved the five tasks 10 of 10. Swift decoded slower than the base on Kapitsa (11–14 tok/s prose), because the borrowed drafter is accepted less often and the import leaves room for 2 slots only.
+- **Nemotron 3.5 Bolt 74B-A9B** (NVIDIA's 24 GB build) runs on Kapitsa on this Mac only with `--slots 1`; with the default 3 slots the second request fails with `insufficient memory`. 30–38 tok/s prose, 66 code, 87 JSON; extraction 34.7 entities per document at 81 % verbatim, 22.8 s per document.
+
+**Limits.** One machine, three runs per speed cell, three documents for extraction, five questions for the agent test, 40 for MMLU-Pro. The Splash numbers are 1–19 days older than the Kapitsa numbers and come from LM Studio's Splash backend of early October. Raw data: [`splash-vs-kapitsa-2026-10-22/data/`](splash-vs-kapitsa-2026-10-22/data/) (the speed file holds the generated texts).
 
 These runs heated the voltage regulators of the Mac mini to 95 °C at minimum fan speed. The fan controller that came out of it lives in its own repository: [Mac-mini-M6-fan-control-LLM](https://github.com/HDZucht/Mac-mini-M6-fan-control-LLM).
 

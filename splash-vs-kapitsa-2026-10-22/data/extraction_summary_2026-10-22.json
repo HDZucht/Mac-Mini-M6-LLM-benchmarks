@@ -1,0 +1,93 @@
+[
+ {
+  "run": "antest",
+  "model": "qwen3.6-35b-a3b",
+  "json_valid": "3/3",
+  "avg_entities": 34.0,
+  "avg_sec_per_doc": 6.1,
+  "avg_tok_s": 69.8,
+  "entities_per_doc": [
+   71,
+   13,
+   18
+  ]
+ },
+ {
+  "run": "antest",
+  "model": "qwen3.8-27b",
+  "json_valid": "3/3",
+  "avg_entities": 58.7,
+  "avg_sec_per_doc": 34.3,
+  "avg_tok_s": 17.1,
+  "entities_per_doc": [
+   129,
+   24,
+   23
+  ]
+ },
+ {
+  "run": "antest",
+  "model": "nemotron-3.5-bolt",
+  "json_valid": "3/3",
+  "avg_entities": 34.7,
+  "avg_sec_per_doc": 22.8,
+  "avg_tok_s": 16.8,
+  "entities_per_doc": [
+   71,
+   12,
+   21
+  ]
+ },
+ {
+  "run": "night run",
+  "model": "qwen3.6-35b-a3b",
+  "json_valid": "3/3",
+  "avg_entities": 33.3,
+  "avg_sec_per_doc": 3.2,
+  "avg_tok_s": 134.2,
+  "entities_per_doc": [
+   71,
+   13,
+   16
+  ]
+ },
+ {
+  "run": "night run",
+  "model": "qwen3.8-27b",
+  "json_valid": "3/3",
+  "avg_entities": 58.7,
+  "avg_sec_per_doc": 17.7,
+  "avg_tok_s": 34.6,
+  "entities_per_doc": [
+   129,
+   24,
+   23
+  ]
+ },
+ {
+  "run": "night run",
+  "model": "qwen3.8-27b-splash",
+  "json_valid": "3/3",
+  "avg_entities": 32.7,
+  "avg_sec_per_doc": 19.8,
+  "avg_tok_s": 27.2,
+  "entities_per_doc": [
+   70,
+   15,
+   13
+  ]
+ },
+ {
+  "run": "night run",
+  "model": "swift-1.5-qwen3.8-27b-q4km",
+  "json_valid": "3/3",
+  "avg_entities": 37.0,
+  "avg_sec_per_doc": 53.2,
+  "avg_tok_s": 8.3,
+  "entities_per_doc": [
+   70,
+   18,
+   23
+  ]
+ }
+]
